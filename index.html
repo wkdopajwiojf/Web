@@ -887,7 +887,6 @@
 
         window.addEventListener("load", () => {
             popupOverlay.classList.add("active");
-            popupOverlay.classList.remove("active");
         });
 
         openAdBtn.addEventListener("click", () => {
@@ -1011,7 +1010,6 @@
             const copyButton = document.getElementById('copyButton');
             copyButton.addEventListener('click', copyScript);
 
-            popupButton.addEventListener('click', handleButtonClick);
         });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
