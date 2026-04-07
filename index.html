@@ -1,958 +1,139 @@
 <!DOCTYPE html>
-<html lang="th">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@300;400;600;700&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-
+    <title>Futuristic UI Hacker Background</title>
     <style>
-        :root {
-            --background-blur: 2px;
-            --background-type: 'video';
-            --background-url: 'จุดใส่พื้นหลัง';
-            --video-url: 'จุดใส่วิดิโอพื้นหลัง';
-            --youtube-url: '';
-
-            /* Black & White Neon Theme */
-            --primary: #ffffff;
-            --primary-dim: rgba(255,255,255,0.7);
-            --primary-faint: rgba(255,255,255,0.08);
-            --border-color: rgba(255,255,255,0.1);
-            --border-hover: rgba(255,255,255,0.3);
-            --bg-section: rgba(255,255,255,0.04);
-            --bg-card: rgba(255,255,255,0.06);
-            --accent-green: #4ade80;
-            --accent-red: #f87171;
-        }
-
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Sarabun', sans-serif;
-            background: #080808;
-            color: #ffffff;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* ─── Background ─── */
-        .background-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            z-index: -1;
+            background-color: #050505;
             overflow: hidden;
-        }
-
-        .background-image {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: blur(var(--background-blur));
-            opacity: 0.15;
-        }
-
-        .background-video {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: blur(var(--background-blur));
-            opacity: 0.15;
-            display: none;
-        }
-
-        .background-youtube {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 100vw; height: 56.25vw;
-            min-height: 100vh; min-width: 177.77vh;
-            transform: translate(-50%, -50%);
-            filter: blur(var(--background-blur));
-            opacity: 0.15;
-            display: none;
-            border: none;
-            pointer-events: none;
-        }
-
-        .background-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.85));
-        }
-
-        /* ─── Loading ─── */
-        .loading-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            background: #080808;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-        }
-
-        .loading-spinner {
-            width: 48px; height: 48px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top: 2px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        .loading-text {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            font-weight: 500;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        @keyframes spin {
-            0%   { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* ─── Popup ─── */
-        .popup-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .popup-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .popup-container {
-            background: #0f0f0f;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 460px;
-            width: 90%;
-            animation: slideUp 0.4s ease;
-            position: relative;
-        }
-
-        .popup-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 20%; right: 20%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(24px); opacity: 0; }
-            to   { transform: translateY(0);    opacity: 1; }
-        }
-
-        .popup-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: -0.5px;
-        }
-
-        .popup-description {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.45);
-            text-align: center;
-            margin-bottom: 28px;
-            line-height: 1.6;
-        }
-
-        .progress-container {
-            margin-bottom: 24px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .progress-text {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .progress-counter {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
-            font-family: 'Space Grotesk', monospace;
-            letter-spacing: 1px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: #ffffff;
-            border-radius: 2px;
-            transition: width 0.8s ease;
-            width: 0%;
-            box-shadow: 0 0 8px rgba(255,255,255,0.5);
+            font-family: monospace;
         }
 
-        .popup-button {
-            width: 100%;
-            padding: 14px 24px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .popup-button:hover:not(:disabled) {
-            background: #e5e5e5;
-            transform: translateY(-1px);
-        }
-
-        .popup-button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .popup-button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .popup-button.completed {
-            background: var(--accent-green);
-            color: #000;
-        }
-
-        .popup-button.completed:hover {
-            background: #6ee7a0;
-        }
-
-        /* ─── Main Content ─── */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .main-content {
-            min-height: 100vh;
-            padding: 70px 0;
-            opacity: 0;
-            animation: fadeInUp 1s ease-out 0.5s forwards;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ─── Hero ─── */
-        .hero-title {
-            font-family: 'Outfit', 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            text-align: center;
-            font-size: clamp(3rem, 9vw, 6.5rem);
-            font-weight: 900;
-            color: #ffffff;
-            margin-bottom: 0;
-            letter-spacing: -4px;
-            animation: glow 2.5s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes glow {
-            0%   {
-                text-shadow:
-                    0 0 10px rgba(255,255,255,0.9),
-                    0 0 30px rgba(255,255,255,0.6),
-                    0 0 60px rgba(255,255,255,0.3),
-                    0 0 100px rgba(255,255,255,0.15);
-                filter: brightness(1.1);
-            }
-            50%  {
-                text-shadow:
-                    0 0 20px rgba(255,255,255,1),
-                    0 0 50px rgba(255,255,255,0.8),
-                    0 0 100px rgba(255,255,255,0.5),
-                    0 0 160px rgba(255,255,255,0.25),
-                    0 0 220px rgba(255,255,255,0.1);
-                filter: brightness(1.25);
-            }
-            100% {
-                text-shadow:
-                    0 0 10px rgba(255,255,255,0.9),
-                    0 0 30px rgba(255,255,255,0.6),
-                    0 0 60px rgba(255,255,255,0.3),
-                    0 0 100px rgba(255,255,255,0.15);
-                filter: brightness(1.1);
-            }
-        }
-
-        .hero-title-wrap {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 40px;
-        }
-
-        .hero-title-wrap::before {
-            content: '';
+        /* Minimal Digital Grid */
+        .grid {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 60px;
-            background: radial-gradient(ellipse at center,
-                rgba(255,255,255,0.12) 0%,
-                rgba(255,255,255,0.05) 40%,
-                transparent 70%);
-            border-radius: 50%;
-            animation: aura 2.5s ease-in-out infinite alternate;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
             pointer-events: none;
-            z-index: -1;
         }
 
-        @keyframes aura {
-            from {
-                opacity: 0.5;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.15);
-            }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.25rem);
-            font-weight: 500;
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-
-        .hero-description {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 80px;
-            animation: fadeInUp 1s ease-out 0.8s both;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 6px 16px;
-            font-family: 'Space Grotesk', monospace;
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-
-        .hero-divider {
-            color: rgba(255,255,255,0.2);
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 6px 16px;
-            font-family: 'Space Grotesk', monospace;
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .hero-badge-dot {
-            width: 5px; height: 5px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-        }
-
-        .hero-divider {
-            color: rgba(255,255,255,0.15);
-            margin: 0 4px;
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        /* ─── Section ─── */
-        .section {
-            margin-bottom: 60px;
-            background: var(--bg-section);
-            border-radius: 16px;
-            padding: 40px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .section::before {
-            content: '';
+        /* Cinematic Soft Blur & Depth of Field Overlay */
+        .vignette {
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.8) 100%);
+            backdrop-filter: blur(1px); /* Soft blur effect */
+            z-index: 3;
+            pointer-events: none;
         }
 
-        .section:hover {
-            transform: translateY(-3px);
-            border-color: var(--border-hover);
-        }
-
-        .section-title {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 30px;
-            text-align: center;
-            letter-spacing: -0.5px;
+        /* Code Canvas */
+        canvas {
+            display: block;
+            z-index: 2;
             position: relative;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 1px;
-            background: rgba(255,255,255,0.3);
+        /* Subtle Glitch Effect */
+        .glitch {
+            animation: glitch-anim 4s infinite linear;
         }
 
-        /* ─── FAQ ─── */
-        .faq-item {
-            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-            background: transparent;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all 0.25s ease;
-        }
-
-        .faq-item:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-card);
-        }
-
-        .faq-question {
-            padding: 16px 22px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: rgba(255,255,255,0.75);
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.25s ease;
-        }
-
-        .faq-question:hover {
-            color: #ffffff;
-        }
-
-        .faq-arrow {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.3);
-            transition: transform 0.25s ease, color 0.25s ease;
-        }
-
-        .faq-item:hover .faq-arrow {
-            transform: translateX(4px);
-            color: rgba(255,255,255,0.7);
-        }
-
-        /* ─── Info Box ─── */
-        .info-box {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: border-color 0.3s ease;
-        }
-
-        .info-box:hover {
-            border-color: var(--border-hover);
-        }
-
-        .info-box-title {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .info-box-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            background: rgba(255,255,255,0.03);
-            padding: 14px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-left: 2px solid rgba(255,255,255,0.2);
-            transition: all 0.25s ease;
-        }
-
-        .info-item:hover {
-            background: rgba(255,255,255,0.06);
-            border-left-color: rgba(255,255,255,0.5);
-        }
-
-        .info-label {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.72rem;
-            color: rgba(255,255,255,0.35);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 6px;
-        }
-
-        .info-value {
-            font-size: 0.95rem;
-            color: #ffffff;
-            font-weight: 600;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        /* ─── Script Container ─── */
-        .script-section {
-            position: relative;
-        }
-
-        .script-container {
-            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-            background: rgba(0,0,0,0.5);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .script-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: scanline 3s linear infinite;
-        }
-
-        @keyframes scanline {
-            0%   { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .script-content {
-            background: #050505;
-            border-radius: 8px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.7;
-            border: 1px solid rgba(255,255,255,0.06);
-            margin-bottom: 20px;
-            min-height: 120px;
-            overflow-x: auto;
-        }
-
-        .script-content pre {
-            margin: 0;
-            color: #e5e5e5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .script-content code {
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Token colors — monochrome palette */
-        .token.comment    { color: #555; }
-        .token.keyword    { color: #fff; font-weight: 600; }
-        .token.string     { color: #aaa; }
-        .token.number     { color: #ddd; }
-        .token.function   { color: #fff; }
-        .token.operator   { color: #888; }
-        .token.punctuation{ color: #666; }
-
-        /* ─── Buttons ─── */
-        .copy-button {
-            font-family: 'Space Grotesk', 'Inter', 'Noto Sans Thai', sans-serif;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .copy-button:hover {
-            background: #e5e5e5;
-            transform: translateY(-1px);
-        }
-
-        .copy-button:active {
-            transform: translateY(0);
-        }
-
-        .copy-success {
-            color: var(--accent-green);
-            font-size: 13px;
-            margin-left: 14px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: 0.5px;
-        }
-
-        .copy-success.show {
-            opacity: 1;
-        }
-
-        /* ─── Responsive ─── */
-        @media (max-width: 768px) {
-            .container { padding: 0 16px; }
-            .main-content { padding: 40px 0; }
-            .hero-description { margin-bottom: 50px; }
-            .section { padding: 24px 18px; margin-bottom: 40px; }
-            .section-title { font-size: 1.5rem; }
-            .faq-question { padding: 14px 18px; font-size: 0.95rem; }
-            .script-content { font-size: 12px; padding: 14px; }
-            .copy-button { width: 100%; margin-top: 8px; }
-            .popup-container { padding: 28px 20px; }
-            .popup-title { font-size: 1.2rem; }
-            .hero-title { letter-spacing: -2px; }
+        @keyframes glitch-anim {
+            0%, 96%, 100% { transform: translate(0, 0); opacity: 1; }
+            97% { transform: translate(-3px, 2px); opacity: 0.8; filter: drop-shadow(2px 0 0 rgba(255,255,255,0.5)); }
+            98% { transform: translate(3px, -2px); opacity: 0.9; }
+            99% { transform: translate(-2px, 0); opacity: 1; }
         }
     </style>
 </head>
-
 <body>
-    <div class="background-container">
-        <img id="backgroundImage" class="background-image" src="" alt="Background">
-        <video id="backgroundVideo" class="background-video" autoplay muted loop playsinline>
-            <source src="" type="video/mp4">
-        </video>
-        <iframe id="backgroundYoutube" class="background-youtube" src="" frameborder="0"
-            allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <div class="background-overlay"></div>
-    </div>
 
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">กำลังโหลด...</div>
-    </div>
-
-    <div id="popupOverlay" class="popup-overlay">
-        <div class="popup-container">
-            <h2 class="popup-title">🔓 สิ่งที่ต้องทำ</h2>
-            <p class="popup-description">กดเข้าลิงก์แล้วรอ 5 วิแล้วกดย้อนกลับ 3 ครั้งคั๊บบ 🗝️</p>
-
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span class="progress-text">ความคืบหน้า</span>
-                    <span id="counterText" class="progress-counter">0 / 3</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="progressFill" class="progress-fill"></div>
-                </div>
-            </div>
-
-            <button id="openAdBtn" class="popup-button">
-                ดูโฆษณา
-            </button>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="container">
-            <div style="text-align:center;">
-                <div class="hero-title-wrap">
-                    <h1 class="hero-title">SCRIPT HUB <span style="opacity:0.2; font-weight:300">///</span></h1>
-                </div>
-            </div>
-
-            <div class="hero-description">
-                <div class="hero-badge">
-                    <span>Murder Mystery 2</span>
-                    <span class="hero-divider">·</span>
-                    <span>v2.0</span>
-                </div>
-                <br>
-                <p class="hero-subtitle">👇 เลื่อนลงด้านล่างเพื่อคัดลอกสคริป ⚡</p>
-            </div>
-
-            <section class="section">
-                <h2 class="section-title">🤔 คำถามที่พบบ่อย</h2>
-                <div class="faq-item">
-                    <a href="จุดใส่ลิ้งที่กำหนด" class="faq-question" target="_blank">
-                        <span>วิธีหาคีย์?</span>
-                        <span class="faq-arrow">→</span>
-                    </a>
-                </div>
-                <div class="faq-item">
-                    <a href="จุดใส่ลิ้งที่กำหนด" class="faq-question" target="_blank">
-                        <span>วิธีติดตั้งตัวรัน?</span>
-                        <span class="faq-arrow">→</span>
-                    </a>
-                </div>
-            </section>
-
-            <section class="section script-section">
-                <h2 class="section-title">สคริป Murder Mystery 2 ✨</h2>
-
-                <div class="info-box">
-                    <h3 class="info-box-title">ข้อมูลสคริป</h3>
-                    <div class="info-box-content">
-                        <div class="info-item">
-                            <span class="info-label">📅 อัพเดทล่าสุด</span>
-                            <span class="info-value">วันที่อัพเดต</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">🎮 รองรับแมพ</span>
-                            <span class="info-value">กำหนดแมพ</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">✅ สถานะ</span>
-                            <span class="info-value" style="color: #4ade80;">จุดใส่สถานะการทำงาน</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">⚠️ ไม่รองรับตัวรัน</span>
-                            <span class="info-value" style="color: #f87171;">Xeno, Sorala</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="script-container">
-                    <div class="script-content" id="scriptContent">
-                        <pre><code class="language-lua">-- ไม่ต้องแปลภาษานะครับ คัดลอกเลยย
-
-    จุดใส่ loadstring
-
--- ใช้อย่างระมัดระวัง!!</code></pre>
-                    </div>
-                    <button class="copy-button" id="copyButton">📋 คัดลอกสคริป</button>
-                    <span class="copy-success" id="copySuccess">✅ คัดลอกเรียบร้อย!</span>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
+    <div class="grid"></div>
+    <div class="vignette"></div>
+    <canvas id="matrix" class="glitch"></canvas>
 
     <script>
-        // ลิสต์ลิงก์โฆษณา
-        const adLinks = [
-            "https://www.effectivegatecpm.com/upi2cccq?key=c0d5a38e346630625f6d41c6ae58f71d",
-            "https://www.effectivegatecpm.com/f9vfat61j?key=eb09e10020cbeb160083cb6be1915951",
-            "https://www.effectivegatecpm.com/u6syh2sy?key=33dca3d0d40ee76877e704c022a179f6"
-        ];
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
 
-        let clickCount = 0;
-        const maxClicks = adLinks.length;
+        // Make canvas full screen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        const popupOverlay = document.getElementById("popupOverlay");
-        const openAdBtn = document.getElementById("openAdBtn");
-        const progressFill = document.getElementById("progressFill");
-        const counterText = document.getElementById("counterText");
+        // Characters for the code stream
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()<>{}[]/\\~';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array.from({ length: columns }).fill(1);
 
-        window.addEventListener("load", () => {
-            popupOverlay.classList.add("active");
-        });
+        // Floating Particles
+        const particles = Array.from({ length: 60 }).map(() => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            speed: Math.random() * 0.5 + 0.1,
+            size: Math.random() * 1.5 + 0.5
+        }));
 
-        openAdBtn.addEventListener("click", () => {
-            if (clickCount < adLinks.length) {
-                window.open(adLinks[clickCount], "_blank");
-            }
-            clickCount++;
-            counterText.textContent = `${clickCount} / ${maxClicks}`;
-            progressFill.style.width = (clickCount / maxClicks * 100) + "%";
-            if (clickCount >= maxClicks) {
-                openAdBtn.textContent = "ปลดล็อคแล้ว ✔";
-                openAdBtn.classList.add("completed");
-                setTimeout(() => {
-                    popupOverlay.classList.remove("active");
-                }, 1500);
-            }
-        });
+        function draw() {
+            // Fading background to create trail effect
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Background Setup
-        function getYouTubeEmbedUrl(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            if (match && match[2].length === 11) {
-                return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playlist=${match[2]}`;
-            }
-            return null;
-        }
+            // Set text style (Glowing White)
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ffffff';
+            ctx.font = fontSize + 'px monospace';
 
-        function initBackground() {
-            const backgroundType = getComputedStyle(document.documentElement).getPropertyValue('--background-type').replace(/['"]/g, '');
-            const backgroundUrl  = getComputedStyle(document.documentElement).getPropertyValue('--background-url').replace(/['"]/g, '');
-            const videoUrl       = getComputedStyle(document.documentElement).getPropertyValue('--video-url').replace(/['"]/g, '');
-            const youtubeUrl     = getComputedStyle(document.documentElement).getPropertyValue('--youtube-url').replace(/['"]/g, '');
-            setBackground(backgroundType, backgroundType === 'youtube' ? youtubeUrl : backgroundType === 'video' ? videoUrl : backgroundUrl);
-        }
+            // Draw scrolling code
+            for (let i = 0; i < drops.length; i++) {
+                // Randomize brightness for depth
+                ctx.globalAlpha = Math.random() * 0.5 + 0.5;
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        function setBackground(type, url) {
-            const backgroundImage   = document.getElementById('backgroundImage');
-            const backgroundVideo   = document.getElementById('backgroundVideo');
-            const backgroundYoutube = document.getElementById('backgroundYoutube');
-            backgroundImage.style.display   = 'none';
-            backgroundVideo.style.display   = 'none';
-            backgroundYoutube.style.display = 'none';
-            if (type === 'youtube') {
-                const embedUrl = getYouTubeEmbedUrl(url);
-                if (embedUrl) {
-                    backgroundYoutube.style.display = 'block';
-                    backgroundYoutube.src = embedUrl;
-                } else {
-                    backgroundImage.style.display = 'block';
-                    backgroundImage.src = getComputedStyle(document.documentElement).getPropertyValue('--background-url').replace(/['"]/g, '');
+                // Reset drop to top randomly to keep continuous loop
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
                 }
-            } else if (type === 'video') {
-                backgroundVideo.style.display = 'block';
-                backgroundVideo.src = url;
-                backgroundVideo.loop = backgroundVideo.muted = backgroundVideo.autoplay = backgroundVideo.playsInline = true;
-                backgroundVideo.addEventListener('ended', function() {
-                    backgroundVideo.currentTime = 0;
-                    backgroundVideo.play();
-                });
-            } else {
-                backgroundImage.style.display = 'block';
-                backgroundImage.src = url;
+                drops[i]++;
             }
-        }
 
-        function hideLoading() {
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-            }, 1000);
-        }
-
-        function copyScript() {
-            const scriptContent = document.getElementById('scriptContent');
-            const copyButton    = document.getElementById('copyButton');
-            const copySuccess   = document.getElementById('copySuccess');
-            const textToCopy    = scriptContent.textContent || scriptContent.innerText;
-            const tempTextArea  = document.createElement('textarea');
-            tempTextArea.value  = textToCopy;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            tempTextArea.setSelectionRange(0, 99999);
-            try {
-                document.execCommand('copy');
-                copySuccess.classList.add('show');
-                copyButton.textContent = '✅ คัดลอกแล้ว!';
-                copyButton.style.background = '#4ade80';
-                copyButton.style.color = '#000';
-            } catch (err) {
-                alert('ไม่สามารถคัดลอกได้ กรุณาคัดลอกด้วยตนเอง');
+            // Draw floating particles
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 12;
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Move particles slowly upwards
+                p.y -= p.speed;
+                if (p.y < 0) p.y = canvas.height;
             }
-            document.body.removeChild(tempTextArea);
+
+            // Loop animation
+            requestAnimationFrame(draw);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            Prism.highlightAll();
-            initBackground();
-            hideLoading();
-            document.getElementById('copyButton').addEventListener('click', copyScript);
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
+        draw();
     </script>
+
 </body>
 </html>
