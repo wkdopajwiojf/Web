@@ -3,635 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@300;400;600;700&family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <title>My GitHub Page</title>
     <style>
-        :root {
-            --primary: #ffffff;
-            --border-color: rgba(255,255,255,0.1);
-            --border-hover: rgba(255,255,255,0.3);
-            --bg-section: rgba(255,255,255,0.04);
-            --bg-card: rgba(255,255,255,0.06);
-            --accent-green: #4ade80;
-            --accent-red: #f87171;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        /* CSS ส่วนการตกแต่ง */
         body {
-            font-family: 'Inter', 'Sarabun', sans-serif;
-            background: #050505;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a40);
             color: #ffffff;
-            overflow-x: hidden;
         }
 
-        /* ─── Matrix Background ─── */
-        .background-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: #050505;
-        }
-        #matrixCanvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
-            
-        }
-        .bg-grid {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .bg-vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 35%, rgba(0,0,0,0.65) 100%);
-            z-index: 3;
-            pointer-events: none;
-        }
-        .background-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.25);
-            z-index: 4;
-        }
-
-        /* ─── Loading ─── */
-        .loading-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            background: #050505;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-        }
-        .loading-spinner {
-            width: 48px; height: 48px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top: 2px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-            margin-bottom: 20px;
-        }
-        .loading-text {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            font-weight: 500;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        @keyframes spin {
-            0%   { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-
-        /* ─── Popup ─── */
-        .popup-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .popup-overlay.active { opacity: 1; visibility: visible; }
-        .popup-container {
-            background: #0f0f0f;
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 460px;
-            width: 90%;
-            animation: slideUp 0.4s ease;
-            position: relative;
-        }
-        .popup-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 20%; right: 20%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        }
-        @keyframes slideUp {
-            from { transform: translateY(24px); opacity: 0; }
-            to   { transform: translateY(0);    opacity: 1; }
-        }
-        .popup-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem; font-weight: 700;
-            color: #ffffff; margin-bottom: 10px;
-            text-align: center; letter-spacing: -0.5px;
-        }
-        .popup-description {
-            font-size: 0.9rem; color: rgba(255,255,255,0.45);
-            text-align: center; margin-bottom: 28px; line-height: 1.6;
-        }
-        .progress-container { margin-bottom: 24px; }
-        .progress-label {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 10px;
-        }
-        .progress-text {
-            font-size: 0.85rem; color: rgba(255,255,255,0.4);
-            letter-spacing: 1px; text-transform: uppercase;
-        }
-        .progress-counter {
-            font-size: 1rem; font-weight: 700; color: #ffffff;
-            font-family: 'Space Grotesk', monospace; letter-spacing: 1px;
-        }
-        .progress-bar {
-            width: 100%; height: 3px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 2px; overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%; background: #ffffff;
-            border-radius: 2px; transition: width 0.8s ease;
-            width: 0%; box-shadow: 0 0 8px rgba(255,255,255,0.5);
-        }
-        .popup-button {
-            width: 100%; padding: 14px 24px;
-            background: #ffffff; color: #000000;
-            border: none; border-radius: 10px;
-            font-size: 0.95rem; font-weight: 700;
-            cursor: pointer; transition: all 0.2s ease;
-            letter-spacing: 1px; text-transform: uppercase;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .popup-button:hover:not(:disabled) { background: #e5e5e5; transform: translateY(-1px); }
-        .popup-button:active:not(:disabled) { transform: translateY(0); }
-        .popup-button:disabled { opacity: 0.4; cursor: not-allowed; }
-        .popup-button.completed { background: var(--accent-green); color: #000; }
-        .popup-button.completed:hover { background: #6ee7a0; }
-
-        /* ─── Main Content ─── */
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-        .main-content {
-            min-height: 100vh; padding: 70px 0;
-            opacity: 0; animation: fadeInUp 1s ease-out 0.5s forwards;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ─── Hero ─── */
-        .hero-title {
-            font-family: 'Outfit', 'Space Grotesk', 'Noto Sans Thai', sans-serif;
+        .container {
             text-align: center;
-            font-size: clamp(3rem, 9vw, 6.5rem);
-            font-weight: 900; color: #ffffff;
-            margin-bottom: 0; letter-spacing: -4px;
-            animation: glow 2.5s ease-in-out infinite;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            color: #00d2ff;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .btn {
             display: inline-block;
-        }
-        @keyframes glow {
-            0%   { text-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3), 0 0 100px rgba(255,255,255,0.15); filter: brightness(1.1); }
-            50%  { text-shadow: 0 0 20px rgba(255,255,255,1), 0 0 50px rgba(255,255,255,0.8), 0 0 100px rgba(255,255,255,0.5), 0 0 160px rgba(255,255,255,0.25); filter: brightness(1.25); }
-            100% { text-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3), 0 0 100px rgba(255,255,255,0.15); filter: brightness(1.1); }
-        }
-        .hero-title-wrap {
-            position: relative; display: inline-block; margin-bottom: 40px;
-        }
-        .hero-title-wrap::before {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%; height: 60px;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 40%, transparent 70%);
-            border-radius: 50%;
-            animation: aura 2.5s ease-in-out infinite alternate;
-            pointer-events: none; z-index: -1;
-        }
-        @keyframes aura {
-            from { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            to   { opacity: 1;   transform: translate(-50%, -50%) scale(1.15); }
-        }
-        .hero-subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.25rem);
-            font-weight: 500;
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 20px; letter-spacing: 1px;
-        }
-        .hero-description {
-            text-align: center; max-width: 800px;
-            margin: 0 auto 80px;
-            animation: fadeInUp 1s ease-out 0.8s both;
-        }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; padding: 6px 16px;
-            font-family: 'Space Grotesk', monospace;
-            font-size: 0.8rem; color: rgba(255,255,255,0.4);
-            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
-        }
-        .hero-divider { color: rgba(255,255,255,0.2); }
-
-        /* ─── Section ─── */
-        .section {
-            margin-bottom: 60px;
-            background: var(--bg-section);
-            border-radius: 16px; padding: 40px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            position: relative; overflow: hidden;
-        }
-        .section::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-        }
-        .section:hover { transform: translateY(-3px); border-color: var(--border-hover); }
-        .section-title {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 1.8rem; font-weight: 700; color: #ffffff;
-            margin-bottom: 30px; text-align: center;
-            letter-spacing: -0.5px; position: relative;
-        }
-        .section-title::after {
-            content: ''; position: absolute;
-            bottom: -10px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 1px; background: rgba(255,255,255,0.3);
+            margin-top: 2rem;
+            padding: 12px 24px;
+            background-color: #00d2ff;
+            color: #1e1e2f;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
         }
 
-        /* ─── FAQ ─── */
-        .faq-item {
-            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-            background: transparent; border-radius: 10px;
-            margin-bottom: 12px; overflow: hidden;
-            border: 1px solid var(--border-color); transition: all 0.25s ease;
-        }
-        .faq-item:hover { border-color: var(--border-hover); background: var(--bg-card); }
-        .faq-question {
-            padding: 16px 22px; font-size: 1rem; font-weight: 500;
-            color: rgba(255,255,255,0.75); cursor: pointer; text-decoration: none;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.25s ease;
-        }
-        .faq-question:hover { color: #ffffff; }
-        .faq-arrow {
-            font-size: 1rem; color: rgba(255,255,255,0.3);
-            transition: transform 0.25s ease, color 0.25s ease;
-        }
-        .faq-item:hover .faq-arrow { transform: translateX(4px); color: rgba(255,255,255,0.7); }
-
-        /* ─── Info Box ─── */
-        .info-box {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 24px;
-            margin-bottom: 24px; transition: border-color 0.3s ease;
-        }
-        .info-box:hover { border-color: var(--border-hover); }
-        .info-box-title {
-            font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif;
-            font-size: 0.8rem; font-weight: 600;
-            color: rgba(255,255,255,0.35); margin-bottom: 16px;
-            display: flex; align-items: center; gap: 8px;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-        .info-box-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-        }
-        .info-item {
-            display: flex; flex-direction: column;
-            background: rgba(255,255,255,0.03);
-            padding: 14px 16px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-left: 2px solid rgba(255,255,255,0.2);
-            transition: all 0.25s ease;
-        }
-        .info-item:hover { background: rgba(255,255,255,0.06); border-left-color: rgba(255,255,255,0.5); }
-        .info-label {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.72rem; color: rgba(255,255,255,0.35);
-            font-weight: 500; text-transform: uppercase;
-            letter-spacing: 1.5px; margin-bottom: 6px;
-        }
-        .info-value {
-            font-size: 0.95rem; color: #ffffff;
-            font-weight: 600; font-family: 'Space Grotesk', sans-serif;
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: #33e0ff;
         }
 
-        /* ─── Script ─── */
-        .script-section { position: relative; }
-        .script-container {
-            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-            background: rgba(0,0,0,0.25); border-radius: 12px;
-            padding: 24px; border: 1px solid var(--border-color);
-            position: relative; overflow: hidden;
-        }
-        .script-container::before {
-            content: ''; position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: scanline 3s linear infinite;
-        }
-        @keyframes scanline {
-            0%   { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        .script-content {
-            background: #050505; border-radius: 8px;
-            padding: 20px; font-family: 'Courier New', monospace;
-            font-size: 13px; line-height: 1.7;
-            border: 1px solid rgba(255,255,255,0.06);
-            margin-bottom: 20px; min-height: 120px; overflow-x: auto;
-        }
-        .script-content pre { margin: 0; color: #e5e5e5; white-space: pre-wrap; word-wrap: break-word; }
-        .script-content code { font-family: 'Courier New', monospace; }
-        .token.comment    { color: #555; }
-        .token.keyword    { color: #fff; font-weight: 600; }
-        .token.string     { color: #aaa; }
-        .token.number     { color: #ddd; }
-        .token.function   { color: #fff; }
-        .token.operator   { color: #888; }
-        .token.punctuation{ color: #666; }
-
-        /* ─── Buttons ─── */
-        .copy-button {
-            font-family: 'Space Grotesk', 'Inter', 'Noto Sans Thai', sans-serif;
-            background: #ffffff; color: #000000;
-            border: none; padding: 12px 28px;
-            border-radius: 8px; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s ease;
-            letter-spacing: 1px; text-transform: uppercase;
-        }
-        .copy-button:hover { background: #e5e5e5; transform: translateY(-1px); }
-        .copy-button:active { transform: translateY(0); }
-        .copy-success {
-            color: var(--accent-green); font-size: 13px;
-            margin-left: 14px; opacity: 0;
-            transition: opacity 0.3s ease;
-            font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.5px;
-        }
-        .copy-success.show { opacity: 1; }
-
-        /* ─── Responsive ─── */
-        @media (max-width: 768px) {
-            .container { padding: 0 16px; }
-            .main-content { padding: 40px 0; }
-            .hero-description { margin-bottom: 50px; }
-            .section { padding: 24px 18px; margin-bottom: 40px; }
-            .section-title { font-size: 1.5rem; }
-            .faq-question { padding: 14px 18px; font-size: 0.95rem; }
-            .script-content { font-size: 12px; padding: 14px; }
-            .copy-button { width: 100%; margin-top: 8px; }
-            .popup-container { padding: 28px 20px; }
-            .popup-title { font-size: 1.2rem; }
-            .hero-title { letter-spacing: -2px; }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
-    <!-- Matrix Background -->
-    <div class="background-container">
-        <canvas id="matrixCanvas"></canvas>
-        <div class="bg-grid"></div>
-        <div class="bg-vignette"></div>
-        <div class="background-overlay"></div>
+    <div class="container">
+        <h1>ยินดีต้อนรับ</h1>
+        <p>นี่คือเว็บไซต์เริ่มต้นของคุณที่รันบน GitHub Pages</p>
+        <p>คุณสามารถแก้ไขโค้ดนี้เพื่อเพิ่มโปรเจกต์ หรือข้อมูลส่วนตัวได้ทันที</p>
+        
+        <a href="https://github.com" class="btn">ไปที่ Repository ของฉัน</a>
+
+        <footer>
+            สร้างด้วย ❤️ โดย Gemini
+        </footer>
     </div>
-
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">กำลังโหลด...</div>
-    </div>
-
-    <div id="popupOverlay" class="popup-overlay">
-        <div class="popup-container">
-            <h2 class="popup-title">🔓 สิ่งที่ต้องทำ</h2>
-            <p class="popup-description">กดเข้าลิงก์แล้วรอ 5 วิแล้วกดย้อนกลับ 3 ครั้งคั๊บบ 🗝️</p>
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span class="progress-text">ความคืบหน้า</span>
-                    <span id="counterText" class="progress-counter">0 / 3</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="progressFill" class="progress-fill"></div>
-                </div>
-            </div>
-            <button id="openAdBtn" class="popup-button">ดูโฆษณา</button>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="container">
-            <div style="text-align:center;">
-                <div class="hero-title-wrap">
-                    <h1 class="hero-title">SKY-DEX HUB <span style="opacity:0.2; font-weight:300">///</span></h1>
-                </div>
-            </div>
-            <div class="hero-description">
-                <div class="hero-badge">
-                    <span>แมพ</span>
-                    <span class="hero-divider">·</span>
-                    <span>เวอร์ชั่น</span>
-                </div>
-                <br>
-                <p class="hero-subtitle">👇 เลื่อนลงด้านล่างเพื่อคัดลอกสคริป ⚡</p>
-            </div>
-
-            <section class="section">
-                <h2 class="section-title">🤔 คำถามที่พบบ่อย</h2>
-                <div class="faq-item">
-                    <a href="จุดใส่ลิ้งที่กำหนด" class="faq-question" target="_blank">
-                        <span>วิธีหาคีย์?</span>
-                        <span class="faq-arrow">→</span>
-                    </a>
-                </div>
-                <div class="faq-item">
-                    <a href="จุดใส่ลิ้งที่กำหนด" class="faq-question" target="_blank">
-                        <span>วิธีติดตั้งตัวรัน?</span>
-                        <span class="faq-arrow">→</span>
-                    </a>
-                </div>
-            </section>
-
-            <section class="section script-section">
-                <h2 class="section-title">สคริป แมพ✨</h2>
-                <div class="info-box">
-                    <h3 class="info-box-title">ข้อมูลสคริป</h3>
-                    <div class="info-box-content">
-                        <div class="info-item">
-                            <span class="info-label">📅 อัพเดทล่าสุด</span>
-                            <span class="info-value">วันที่อัพเดต</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">🎮 รองรับแมพ</span>
-                            <span class="info-value">กำหนดแมพ</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">✅ สถานะ</span>
-                            <span class="info-value" style="color:#4ade80;">จุดใส่สถานะการทำงาน</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">⚠️ ไม่รองรับตัวรัน</span>
-                            <span class="info-value" style="color:#f87171;">Xeno, Sorala</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="script-container">
-                    <div class="script-content" id="scriptContent">
-                        <pre><code class="language-lua">-- ไม่ต้องแปลภาษานะครับ คัดลอกเลยย
-
-    จุดใส่ loadstring
-
--- ใช้อย่างระมัดระวัง!!</code></pre>
-                    </div>
-                    <button class="copy-button" id="copyButton">📋 คัดลอกสคริป</button>
-                    <span class="copy-success" id="copySuccess">✅ คัดลอกเรียบร้อย!</span>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lua.min.js"></script>
 
     <script>
-        /* ─── Matrix Background ─── */
-        (function() {
-            const canvas = document.getElementById('matrixCanvas');
-            const ctx = canvas.getContext('2d');
-            function resize() {
-                canvas.width  = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()<>{}[]/\\~';
-            const fontSize = 14;
-            let columns = Math.floor(canvas.width / fontSize);
-            let drops = Array.from({ length: columns }).fill(1);
-
-            const particles = Array.from({ length: 60 }).map(() => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                speed: Math.random() * 0.5 + 0.1,
-                size: Math.random() * 1.5 + 0.5
-            }));
-
-            function draw() {
-                ctx.fillStyle = 'rgba(5,5,5,0.08)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#ffffff';
-                ctx.font = fontSize + 'px monospace';
-
-                columns = Math.floor(canvas.width / fontSize);
-                while (drops.length < columns) drops.push(1);
-
-                for (let i = 0; i < columns; i++) {
-                    ctx.globalAlpha = Math.random() * 0.5 + 0.5;
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                    drops[i]++;
-                }
-
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 12;
-                for (let p of particles) {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    p.y -= p.speed;
-                    if (p.y < 0) p.y = canvas.height;
-                }
-                requestAnimationFrame(draw);
-            }
-            draw();
-        })();
-
-        /* ─── Popup ─── */
-        const adLinks = [
-            "ลิ้ง1",
-            "ลิ้ง2",
-            "ลิ้ง3"
-        ];
-        let clickCount = 0;
-        const maxClicks = adLinks.length;
-        const popupOverlay = document.getElementById("popupOverlay");
-        const openAdBtn    = document.getElementById("openAdBtn");
-        const progressFill = document.getElementById("progressFill");
-        const counterText  = document.getElementById("counterText");
-
-        window.addEventListener("load", () => { popupOverlay.classList.add("active"); });
-
-        openAdBtn.addEventListener("click", () => {
-            if (clickCount < adLinks.length) window.open(adLinks[clickCount], "_blank");
-            clickCount++;
-            counterText.textContent = `${clickCount} / ${maxClicks}`;
-            progressFill.style.width = (clickCount / maxClicks * 100) + "%";
-            if (clickCount >= maxClicks) {
-                openAdBtn.textContent = "ปลดล็อคแล้ว ✔";
-                openAdBtn.classList.add("completed");
-                setTimeout(() => { popupOverlay.classList.remove("active"); }, 1500);
-            }
-        });
-
-        /* ─── Copy ─── */
-        function copyScript() {
-            const scriptContent = document.getElementById('scriptContent');
-            const copyButton    = document.getElementById('copyButton');
-            const copySuccess   = document.getElementById('copySuccess');
-            const textToCopy    = scriptContent.textContent || scriptContent.innerText;
-            const ta = document.createElement('textarea');
-            ta.value = textToCopy;
-            document.body.appendChild(ta);
-            ta.select(); ta.setSelectionRange(0, 99999);
-            try {
-                document.execCommand('copy');
-                copySuccess.classList.add('show');
-                copyButton.textContent = '✅ คัดลอกแล้ว!';
-                copyButton.style.background = '#4ade80';
-                copyButton.style.color = '#000';
-            } catch(e) {
-                alert('ไม่สามารถคัดลอกได้ กรุณาคัดลอกด้วยตนเอง');
-            }
-            document.body.removeChild(ta);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            Prism.highlightAll();
-            document.getElementById('loadingScreen').setTimeout = setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-            }, 1000);
-            document.getElementById('copyButton').addEventListener('click', copyScript);
+        // JavaScript สำหรับเพิ่มลูกเล่นเล็กน้อย
+        console.log("เว็บไซต์โหลดเสร็จสมบูรณ์!");
+        
+        // ตัวอย่าง: เปลี่ยนสีหัวข้อเมื่อคลิก
+        const title = document.querySelector('h1');
+        title.addEventListener('click', () => {
+            title.style.color = title.style.color === 'rgb(0, 210, 255)' ? '#ff007b' : '#00d2ff';
         });
     </script>
 </body>
